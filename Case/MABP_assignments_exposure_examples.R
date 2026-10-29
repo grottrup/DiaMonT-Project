@@ -9,15 +9,15 @@ library(medisr)
 library(VGAM)
 
 
-mabp_data <- medisr::mabp
-mabp_data <- tibble::tibble(mabp_data)
+data <- medisr::mabp
+data <- tibble::tibble(data)
 
 ?medisr::mabp
 #dataclean
 # sex, diabetes, hypertension og eventuelt NIHSS
 # 1) Mange af variablene i datasættet er skrevet som numeriske værdier e.g. sex=0/1. Lav nogle nye character variable, e.g. sex_chr=Male/Female
 
-mabp_data <- mabp_data %>% 
+data <- data %>% 
   mutate(
     Sex_=ifelse(sex==1,yes="Female",no="Male"),
     Diabetes_=ifelse(Diabetes==1,yes="Diabetes",no="No diabetes"),
