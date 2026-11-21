@@ -1,7 +1,6 @@
 #############
 ##Load Data##
 #############
-
 #Langtidsblodsukker 
 library(haven)
 adapt_ano_cgm <- read_sas("RawDataSecret/adapt_ano_cgm.sas7bdat",NULL)
@@ -10,13 +9,11 @@ library(haven)
 adapt_ano_cgm_f <- read_sas("RawDataSecret/adapt_ano_cgm_f.sas7bdat", 
                             NULL)
 View(adapt_ano_cgm_f)
-
 #Blodprøver for Aalborg
 library(haven)
 adapt_ano_labka_a <- read_sas("RawDataSecret/adapt_ano_labka_a.sas7bdat", 
                               NULL)
 View(adapt_ano_labka_a)
-
 #Spørgeskema fra falster 
 library(haven)
 adapt_ano_redcap_spg_afs_f <- read_sas("RawDataSecret/adapt_ano_redcap_spg_afs_f.sas7bdat", 
@@ -26,8 +23,6 @@ library(haven)
 adapt_ano_redcap_spg_ink_f <- read_sas("RawDataSecret/adapt_ano_redcap_spg_ink_f.sas7bdat", 
                                        NULL)
 View(adapt_ano_redcap_spg_ink_f)
-
-
 #Sprøgeskema fra Aalborg
 library(haven)
 adapt_ano_redcap_spg_afs <- read_sas("RawDataSecret/adapt_ano_redcap_spg_afs.sas7bdat", 
@@ -37,7 +32,6 @@ library(haven)
 adapt_ano_redcap_spg_ink <- read_sas("RawDataSecret/adapt_ano_redcap_spg_ink.sas7bdat", 
                                      NULL)
 View(adapt_ano_redcap_spg_ink)
-
 #Stamdata Aalborg: Alder, gruppe, køn mm
 library(haven)
 adapt_ano_redcap_stamdata <- read_sas("RawDataSecret/adapt_ano_redcap_stamdata.sas7bdat", 
@@ -47,8 +41,6 @@ library(haven)
 adapt_ano_redcap_stamdata2 <- read_sas("RawDataSecret/adapt_ano_redcap_stamdata2.sas7bdat", 
                                        NULL)
 View(adapt_ano_redcap_stamdata2)
-
-
 #Stamdata Falster: Alder, gruppe, køn mm
 library(haven)
 adapt_ano_redcap_stamdata_f <- read_sas("RawDataSecret/adapt_ano_redcap_stamdata_f.sas7bdat", 
@@ -58,7 +50,6 @@ library(haven)
 adapt_ano_redcap_stamdata_f2 <- read_sas("RawDataSecret/adapt_ano_redcap_stamdata_f2.sas7bdat", 
                                          NULL)
 View(adapt_ano_redcap_stamdata_f2)
-
 
 
 
@@ -84,7 +75,7 @@ View(Haemoglobin_Vaedier_f_a)
 
 #Overfører Aalborgs hæmoglobinværdier til det nye datasæt
 Haemoglobin_Vaedier_a <- adapt_ano_labka_a %>%
-  filter(ResultatTekst=resutattekst)
+  filter(ResultatTekst == ResultatTekst)
 
 Haemoglobin_Vaedier_f_a <- bind_rows(
   Haemoglobin_Vaedier_f_a, adapt_ano_labka_a
@@ -92,20 +83,62 @@ Haemoglobin_Vaedier_f_a <- bind_rows(
 View(Haemoglobin_Vaedier_f_a)
 
 
-#Saml data i én kulonne 
+#Saml målt hæmoglobin data i én kulonne 
 Haemoglobin_Vaedier_f_a <- Haemoglobin_Vaedier_f_a %>%
-  mutate(haemoglobinvaerdier = coalesce(
+  mutate(Haemoglobinvaerdier = coalesce(
          as.character(SvarKode),
          as.character(ResultatTekst),
          ))
 View(Haemoglobin_Vaedier_f_a)
 
-#sletter unødvedige kulonner 
+#Saml MaalingTidFraInkl og TidFraInkl i én kulonne
 Haemoglobin_Vaedier_f_a <- Haemoglobin_Vaedier_f_a %>%
-  select(-TidFraInkl, -Spoergeskema, -Spoergsmaal, - SvarTekst, -MaalingTidFraInkl, -NPUKode, -Analysenavn, -Analysekode, -ResultatForholdstegn, -ResultatEnhed, -InterntResultatNumerisk, -InterntResultatTekst)
+  mutate(MaalingTidFraInkl_samlet = coalesce(
+    as.character(MaalingTidFraInkl),
+    as.character(TidFraInkl),
+  ))
 View(Haemoglobin_Vaedier_f_a)
 
+
+
+#sletter unødvedige kulonner 
+Haemoglobin_Vaedier_f_a <- Haemoglobin_Vaedier_f_a %>%
+  select(-Spoergeskema, - SvarTekst, -NPUKode, -Analysenavn, -Analysekode, -ResultatForholdstegn, -InterntResultatNumerisk, -InterntResultatTekst)
+View(Haemoglobin_Vaedier_f_a)
+
+
+
+#VIL GERNE INDSÆTTE FÆLLES ENHED - MANGLER SVAR IFT ENHED!!!!!!!!!!! Virker til at aalborg har enhed mmol/mol og falster har mmol/L
+
+
+
 summery(Haemoglobin_Vaedier_f_a$haemoglobinvaerdier)
+
+
+#Indsætter ift deres patientnummer, om de er i hhv. interventionsgruppen eller kontrolgruppen, samt alder, køn og om de er afsluttet før tid eller nej
+library(dplyr)
+#Tilføj hospital til stamdata fra Aalborg og til Falster:
+Stamdata_aalborg <- adapt_ano_redcap_stamdata %>%
+  mutate(By = "Aalborg")
+Stamdata_Falster <- adapt_ano_redcap_stamdata_f %>%
+  mutate(By = "Falster")
+#Samler de to data:
+Stamdata_f_a <- bind_rows(
+  Stamdata_aalborg,
+  Stamdata_Falster
+)
+View(Stamdata_f_a)
+
+#Overfører stamdata til haemoglobindatasættet:
+Haemoglobin_Vaedier_f_a <- Haemoglobin_Vaedier_f_a %>%
+  left_join(
+    Stamdata_f_a,
+    by = c("id_Patient", "By")
+  )
+View(Haemoglobin_Vaedier_f_a)
+
+
+
 
 
 
