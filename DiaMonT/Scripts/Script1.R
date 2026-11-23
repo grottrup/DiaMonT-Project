@@ -1,52 +1,45 @@
+library(haven)
+library(dplyr)
+
 #############
 ##Load Data##
 #############
 #Langtidsblodsukker 
-library(haven)
+
 adapt_ano_cgm <- read_sas("RawDataSecret/adapt_ano_cgm.sas7bdat",NULL)
 View(adapt_ano_cgm)
-library(haven)
 adapt_ano_cgm_f <- read_sas("RawDataSecret/adapt_ano_cgm_f.sas7bdat", 
                             NULL)
 View(adapt_ano_cgm_f)
 #Blodprøver for Aalborg
-library(haven)
 adapt_ano_labka_a <- read_sas("RawDataSecret/adapt_ano_labka_a.sas7bdat", 
                               NULL)
 View(adapt_ano_labka_a)
 #Spørgeskema fra falster 
-library(haven)
 adapt_ano_redcap_spg_afs_f <- read_sas("RawDataSecret/adapt_ano_redcap_spg_afs_f.sas7bdat", 
                                        NULL)
 View(adapt_ano_redcap_spg_afs_f)
-library(haven)
 adapt_ano_redcap_spg_ink_f <- read_sas("RawDataSecret/adapt_ano_redcap_spg_ink_f.sas7bdat", 
                                        NULL)
 View(adapt_ano_redcap_spg_ink_f)
 #Sprøgeskema fra Aalborg
-library(haven)
 adapt_ano_redcap_spg_afs <- read_sas("RawDataSecret/adapt_ano_redcap_spg_afs.sas7bdat", 
                                      NULL)
 View(adapt_ano_redcap_spg_afs)
-library(haven)
 adapt_ano_redcap_spg_ink <- read_sas("RawDataSecret/adapt_ano_redcap_spg_ink.sas7bdat", 
                                      NULL)
 View(adapt_ano_redcap_spg_ink)
 #Stamdata Aalborg: Alder, gruppe, køn mm
-library(haven)
 adapt_ano_redcap_stamdata <- read_sas("RawDataSecret/adapt_ano_redcap_stamdata.sas7bdat", 
                                       NULL)
 View(adapt_ano_redcap_stamdata)
-library(haven)
 adapt_ano_redcap_stamdata2 <- read_sas("RawDataSecret/adapt_ano_redcap_stamdata2.sas7bdat", 
                                        NULL)
 View(adapt_ano_redcap_stamdata2)
 #Stamdata Falster: Alder, gruppe, køn mm
-library(haven)
 adapt_ano_redcap_stamdata_f <- read_sas("RawDataSecret/adapt_ano_redcap_stamdata_f.sas7bdat", 
                                         NULL)
 View(adapt_ano_redcap_stamdata_f)
-library(haven)
 adapt_ano_redcap_stamdata_f2 <- read_sas("RawDataSecret/adapt_ano_redcap_stamdata_f2.sas7bdat", 
                                          NULL)
 View(adapt_ano_redcap_stamdata_f2)
@@ -57,7 +50,6 @@ View(adapt_ano_redcap_stamdata_f2)
 ### Data Cleaning ###
 #####################
 #Saml alle fra Falsters hæmoglobin værdier (adapt_ano_redcap_spg_asf_f)
-library(dplyr)
 
 #Lav en kulonne fra med "Aalborg" i "adapt_Ano_labka_a" og en kulonne med "Falser" i "adapt_ano_redcap_spg_asf_f"
 adapt_ano_labka_a <- adapt_ano_labka_a %>%
@@ -116,7 +108,6 @@ summery(Haemoglobin_Vaedier_f_a$haemoglobinvaerdier)
 
 
 #Indsætter ift deres patientnummer, om de er i hhv. interventionsgruppen eller kontrolgruppen, samt alder, køn og om de er afsluttet før tid eller nej
-library(dplyr)
 #Tilføj hospital til stamdata fra Aalborg og til Falster:
 Stamdata_aalborg <- adapt_ano_redcap_stamdata %>%
   mutate(By = "Aalborg")
@@ -174,3 +165,4 @@ View(Haemoglobin_Vaedier_f_a)
 
 
 #Saving a plot
+
