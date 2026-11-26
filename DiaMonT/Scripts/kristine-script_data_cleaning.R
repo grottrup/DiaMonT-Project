@@ -9,44 +9,36 @@ library(dplyr)
 ##Load Data##
 #############
 #Langtidsblodsukker
-library(haven)
 cgm <- read_sas("Z:/diamont_completed/adapt_ano_cgm.sas7bdat")
 View(cgm)
 
-library(haven)
 cgm_f <- read_sas("Z:/diamont_completed/adapt_ano_cgm_f.sas7bdat")
 View(cgm_f)
 
 
 #Blodprøver for Aalborg
-library(haven)
 labka_a <- read_sas("Z:/diamont_completed/adapt_ano_labka_a.sas7bdat")
 View(labka_a)
 
 
 #Spørgeskema fra Falster (Efter langtidsblodsukker)
-library(haven)
 spg_afs_f <- read_sas("Z:/diamont_completed/adapt_ano_redcap_spg_afs_f.sas7bdat")
 View(spg_afs_f)
 
 #Spørgeskema fra Falster (Før langtidsblodsukker)
-library(haven)
 spg_ink_f <- read_sas("Z:/diamont_completed/adapt_ano_redcap_spg_ink_f.sas7bdat")
 View(spg_ink_f)
 
 
 #Sprøgeskema fra Aalborg
-library(haven)
 spg_afs <- read_sas("Z:/diamont_completed/adapt_ano_redcap_spg_afs.sas7bdat")
 View(spg_afs)
 
-library(haven)
 spg_ink <- read_sas("Z:/diamont_completed/adapt_ano_redcap_spg_ink.sas7bdat")
 View(spg_ink)
 
 
 #Stamdata Aalborg: Alder, gruppe, køn mm
-library(haven)
 stamdata <- read_sas("Z:/diamont_completed/adapt_ano_redcap_stamdata.sas7bdat")
 View(stamdata)
 
@@ -54,7 +46,6 @@ stamdata2 <- read_sas("Z:/diamont_completed/adapt_ano_redcap_stamdata2.sas7bdat"
 View(stamdata2)
 
 #Stamdata Falster: Alder, gruppe, køn mm
-library(haven)
 stamdata_f <- read_sas("Z:/diamont_completed/adapt_ano_redcap_stamdata_f.sas7bdat")
 View(stamdata_f)
 
